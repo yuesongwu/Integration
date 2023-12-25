@@ -1,0 +1,32 @@
+#!/bin/bash --login
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=32
+#SBATCH --mem=300G
+#SBATCH --time=23:59:00
+#SBATCH --job-name=Harmony
+#SBATCH --account=cmse
+#SBATCH --array=1
+#SBATCH --output=./slurmout/%x-%j.SLURMout
+
+module purge
+module load GCC/11.2.0 
+module load Conda/3
+conda activate R4.3.0
+
+
+
+echo start: $(date +%H:%M:%S)
+mkdir Rout
+if [ $SLURM_ARRAY_TASK_ID  == 1 ]; then 
+    # Rscript Harmony_integration.R HLCA_zstd_2000 'batch' TRUE  > ./Rout/Harmony_integration.Rout  # for test 
+    Rscript Harmony_integration.R HLCA_zstd_2000 'batch' FALSE  > ./Rout/Harmony_integration.Rout 
+fi 
+if [ $SLURM_ARRAY_TASK_ID  == 2 ]; then 
+    # Rscript FastMNN_integration.R HLCA_zstd_2000 'batch' TRUE  > ./Rout/FastMNN_integration.Rout # for test 
+    Rscript FastMNN_integration.R HLCA_zstd_2000 'batch' FALSE  > ./Rout/FastMNN_integration.Rout
+fi 
+##! first test algorithm on test dataset , then use whole data set
+##! after get scvi hvg2000 can run non test 
+#!  how to run scib metrics??
+#! next scanpy-scanorama, saucie?, CB
+echo end: $(date +%H:%M:%S)

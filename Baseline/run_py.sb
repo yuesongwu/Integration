@@ -1,0 +1,38 @@
+#!/bin/bash --login
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=400G
+#SBATCH --time=23:59:00
+#SBATCH --job-name=saucie
+#SBATCH --account=cmse
+#SBATCH --array=4
+#SBATCH --output=./slurmout/%x-%j.SLURMout
+
+## --gpus=v100:1
+##  --gres=gpu:1
+conda activate  scInformer
+
+echo start: $(date +%H:%M:%S)
+
+if [ $SLURM_ARRAY_TASK_ID  == 1 ]; then 
+    srun python Scvi_integration.py --data HLCA_zstd_2000  --batch_correction batch 
+fi 
+
+if [ $SLURM_ARRAY_TASK_ID  == 2 ]; then 
+    srun python CellBlast_integration.py --data HLCA_zstd_2000  --batch_correction batch 
+fi 
+
+if [ $SLURM_ARRAY_TASK_ID  == 3 ]; then 
+    srun python Scanorama_integration.py --data HLCA_zstd_2000  --batch_correction batch 
+fi 
+
+if [ $SLURM_ARRAY_TASK_ID  == 4 ]; then 
+    conda activate  saucie
+    srun python Saucie_integration.py --data HLCA_zstd_2000  --batch_correction batch 
+fi 
+
+if [ $SLURM_ARRAY_TASK_ID  == 5 ]; then 
+    srun python Eval_scib.py --data HLCA_zstd_2000  --batch_correction batch 
+fi 
+
+echo end: $(date +%H:%M:%S)
