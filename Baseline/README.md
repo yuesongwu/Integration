@@ -17,6 +17,7 @@ https://www.iscb.org/ismb2024/home
 
 ## Baseline 
 ### Installation
+```bash
 git clone https://github.com/C0nc/scInformer.git
 cd scInformer
 conda create -n leiden python=3.9
@@ -41,9 +42,11 @@ pip install packaging
 pip install natsort
 pip install numba
 pip install tqdm
+```
 
 R4.3.0; Seurat V5
 FastMNN; Harmony
+
 
 ### Baseline HPCC Notes 
 Baseline(GPU): scvi, Cell-BLAST   (on hpcc: request v100:gpu, b/c k80 is cuda11.4, too old)
